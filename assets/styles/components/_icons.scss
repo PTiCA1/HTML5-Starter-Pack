@@ -1,0 +1,26 @@
+@font-face {
+	font-family: "HSPFont";
+	src: url('../fonts/HSPFont.eot');
+	src: url('../fonts/HSPFont.eot?#iefix') format('eot'),
+		url('../fonts/HSPFont.woff2') format('woff2'),
+		url('../fonts/HSPFont.woff') format('woff'),
+		url('../fonts/HSPFont.ttf') format('truetype'),
+		url('../fonts/HSPFont.svg#HSPFont') format('svg');
+}
+
+.icon:before {
+	font-family: "HSPFont";
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: normal;
+	/* speak: none; only necessary if not using the private unicode range (firstGlyph option) */
+	text-decoration: none;
+	text-transform: none;
+}
+
+
+.icon-icon-world:before {
+	content: "\E001";
+}

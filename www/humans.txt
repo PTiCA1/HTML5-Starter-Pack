@@ -1,0 +1,14 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+    Libor Ptacek -- Front-end Developer -- github.com/PTiCA1/HTML5-Starter-Pack
+
+# THANKS
+
+
+# TECHNOLOGY COLOPHON
+
+    CSS3, HTML5
+    Apache Server Configs, jQuery, Bootstrap, Boilerplate, Gulp, Bower, NPM and other

@@ -1,0 +1,21 @@
+// Main variables
+@import "common/variables-bootstrap";
+
+// Main mixins
+@import "mixins/mixins";
+
+// Sprites
+// @link https://www.npmjs.com/package/gulp.spritesmith
+@import "mixins/sprites";
+
+// Bootstrap
+@import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap";
+
+// Components
+@import "components/icons";
+@import "components/sprites";
+
+// layouts
+@import "layouts/header";
+@import "layouts/footer";
+@import "layouts/main";
