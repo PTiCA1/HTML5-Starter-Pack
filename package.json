@@ -36,5 +36,9 @@
     "jshint-stylish": "^2.0.1",
     "run-sequence": "^1.2.1",
     "gulp.spritesmith": "^6.2.1"
+  },
+  "dependencies": {
+    "bootstrap-sass": "^3.3.7",
+    "jquery": "^3.3.1"
   }
 }

@@ -104,7 +104,7 @@ gulp.task('scripts:main', ['jshint'], function () {
 // Plugins Scripts
 gulp.task('scripts:plugins', function () {
   gulp.src([
-    'bower_components/bootstrap-sass/assets/javascripts/bootstrap.js'
+    'node_modules/bootstrap-sass/assets/javascripts/bootstrap.js'
   ])
     .pipe(concat('plugins.js'))
     .pipe(uglify())
@@ -114,7 +114,7 @@ gulp.task('scripts:plugins', function () {
 // Vendor Scripts
 gulp.task('scripts:vendor', function () {
   gulp.src([
-    'bower_components/jquery/dist/jquery.min.js'
+    'node_modules/jquery/dist/jquery.min.js'
   ])
     .pipe(uglify())
     .pipe(gulp.dest('www/js/vendor'));
@@ -123,8 +123,7 @@ gulp.task('scripts:vendor', function () {
 // Fonts
 gulp.task('fonts', function () {
   gulp.src([
-    'bower_components/bootstrap-sass/assets/fonts/bootstrap/*.{eot,svg,ttf,woff,woff2}',
-    'bower_components/lightcase/src/fonts/*.{eot,svg,ttf,woff,woff2}',
+    'node_modules/bootstrap-sass/assets/fonts/bootstrap/*.{eot,svg,ttf,woff,woff2}',
     'assets/fonts/*.{eot,svg,ttf,woff,woff2}'
   ])
     .pipe(gulp.dest('www/fonts'));
