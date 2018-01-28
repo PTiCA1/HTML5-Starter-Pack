@@ -4,13 +4,11 @@ Starter pack for front-end developers. SCSS, Bootstrap, JSHint, Gulp, NPM, Live 
 ## Requirements
 * [Node.js](http://nodejs.org/)
 * Gulp - npm install -g gulp
-* Bower - npm install -g bower
 
 ## Instalation
 ```
 git clone git://github.com/PTiCA1/HTML5-Starter-Pack.git my-project
 npm install
-bower install
 gulp --production
 ```
 
