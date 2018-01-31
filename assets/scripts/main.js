@@ -1,78 +1,24 @@
-/* ========================================================================
- * DOM-based Routing
- * Based on http://goo.gl/EUTi53 by Paul Irish
- *
- * Only fires on body classes that match. If a body class contains a dash,
- * replace the dash with an underscore when adding it to the object below.
- *
- * .noConflict()
- * The routing is enclosed within an anonymous function so that you can
- * always reference jQuery with $, even when in .noConflict() mode.
- * ======================================================================== */
+// import external dependencies
+// import 'jquery';
 
-(function($) {
+// Import everything from autoload
+// import "./autoload/**/*"
 
-  // Use this variable to set up the common and page specific functions. If you
-  // rename this variable, you will also need to rename the namespace below.
-  var HSP = {
-    // All pages
-    'common': {
-      init: function() {
+// import local dependencies
+import Router from './util/Router';
+import common from './routes/common';
+// import home from './routes/home';
+// import aboutUs from './routes/about';
 
-      },
-      finalize: function() {
+/** Populate Router instance with DOM routes */
+const routes = new Router({
+  // All pages
+  common
+  // Home page
+//   home,
+  // About Us page, note the change from about-us to aboutUs.
+//   aboutUs,
+});
 
-      }
-    },
-    'home': {
-      init: function() {
-
-      },
-      finalize: function() {
-        console.log('this is homepage');
-      }
-    },
-    'contact': {
-      init: function() {
-
-      },
-      finalize: function() {
-
-      }
-    }
-  };
-
-  // The routing fires all common scripts, followed by the page specific scripts.
-  // Add additional events for more control over timing e.g. a finalize event
-  var UTIL = {
-    fire: function(func, funcname, args) {
-      var fire;
-      var namespace = HSP;
-      funcname = (funcname === undefined) ? 'init' : funcname;
-      fire = func !== '';
-      fire = fire && namespace[func];
-      fire = fire && typeof namespace[func][funcname] === 'function';
-
-      if (fire) {
-        namespace[func][funcname](args);
-      }
-    },
-    loadEvents: function() {
-      // Fire common init JS
-      UTIL.fire('common', 'initMap');
-
-      // Fire page-specific init JS, and then finalize JS
-      $.each(document.body.className.replace(/-/g, '_').split(/\s+/), function(i, classnm) {
-        UTIL.fire(classnm);
-        UTIL.fire(classnm, 'finalize');
-      });
-
-      // Fire common finalize JS
-      UTIL.fire('common', 'finalize');
-    }
-  };
-
-  // Load Events
-  $(document).ready(UTIL.loadEvents);
-
-})(jQuery); // Fully reference jQuery after this point.
+// Load Events
+jQuery(document).ready(() => routes.loadEvents());

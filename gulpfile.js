@@ -5,11 +5,12 @@ var gulp                    = require('gulp'),
     imagemin                = require('gulp-imagemin'),
     pngquant                = require('imagemin-pngquant'),
     autoprefixer            = require('gulp-autoprefixer'),
-    minifyCss               = require('gulp-cssnano'),
+    cssnano               = require('gulp-cssnano'),
     runSequence             = require('run-sequence'),
     jshint                  = require('gulp-jshint'),
     clean                   = require('gulp-clean'),
     sourcemaps              = require('gulp-sourcemaps'),
+    webpack                 = require('webpack-stream'),
 
     // Sprites
     // @link https://www.npmjs.com/package/gulp.spritesmith
@@ -28,6 +29,9 @@ var gulp                    = require('gulp'),
 
     browserSync             = require('browser-sync').create(),
     reload                  = browserSync.reload;
+
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+
 
 // Clean
 gulp.task('clean-all', function () {
@@ -68,36 +72,55 @@ gulp.task('sprites', function () {
   spriteData.css.pipe(gulp.dest('assets/styles/mixins/'));
 });
 
+
 // Styles
 gulp.task('styles', function() {
   return gulp.src([
     './assets/styles/main.scss'
   ])
     .pipe(_if(development, sourcemaps.init())) //adds sourcemaps for developer
-      .pipe(sass())
-      .pipe(autoprefixer({
-          browsers: ['last 2 versions', 'ie 9', 'android 4', 'opera 12'],
-          cascade: false,
-          zindex: true
-      }))
-      .pipe(_if(!development, minifyCss({
-        discardComments: {removeAll: true},
-        compatibility: 'ie8',
-        zindex: false
-      }))) //disable minifyCss for developer
+
+    .pipe(sass().on('error', sass.logError))
+
+    .pipe(autoprefixer({
+        browsers: ['last 2 versions', 'android 4', 'opera 12'],
+        cascade: false
+    }))
+
+    .pipe(_if(!development, cssnano({
+      discardComments: {removeAll: true},
+
+      reduceIdents: false, //fix IE10
+      reducePositions: false, //fix IE10
+
+      zindex: false
+    }))) //disable cssnano for developer
+
     .pipe(_if(development, sourcemaps.write('../maps'))) //adds sourcemaps for developer
+
     .pipe(gulp.dest('www/css'))
+    .pipe(browserSync.stream());
 });
 
+
 // Scripts
-gulp.task('scripts:main', ['jshint'], function () {
-  gulp.src([
-    './assets/scripts/**/*.js'
-  ])
-    .pipe(_if(development, sourcemaps.init())) //adds sourcemaps for developer
-      .pipe(concat('main.js'))
-      .pipe(_if(!development, uglify())) //disable minify js for developer
-    .pipe(_if(development, sourcemaps.write())) //adds sourcemaps for developer
+gulp.task('scripts:main', function() {
+  return gulp.src('assets/scripts/main.js')
+    .pipe(webpack({
+      output: {
+        library: 'Library',
+        filename: 'main.js',
+        libraryTarget: 'umd'
+      },
+      module: {
+        loaders: [{
+          loader: 'babel-loader'
+        }]
+      },
+      plugins: [
+        new UglifyJsPlugin()
+      ]
+    }))
     .pipe(gulp.dest('www/js'));
 });
 
@@ -163,33 +186,29 @@ gulp.task('videos', function() {
 
 // Serve - Live reload server
 // @link http://www.browsersync.io/docs/gulp/
-gulp.task('serve', ['watch'], function() {
+gulp.task('serve', function() {
+
   browserSync.init({
-    files: [
-      "./www/css/*.*",
-      "./www/img/*.*",
-      "./www/videos/*.*",
-      "./www/js/*.*",
-      "./www/fonts/*.*",
-      "./www/icons/*.*",
-      "./www/**/*.html",
-    ],
-    // Local livereload
-    // gulp serve
-    proxy: "http://www.local.dev"
+    server: "./www"
   });
 
-  gulp.watch('./www/**/*.{html,php}').on('change', browserSync.reload);
+  browserSync.watch([
+    './assets/styles/**.scss',
+    './assets/styles/**/*.scss'
+  ], function () {
+    gulp.run('styles');
+  });
+  browserSync.watch('./www/**/*.{html,php}').on('change', browserSync.reload);
 });
 
 // Watch
 gulp.task('watch', function() {
-  gulp.watch('./assets/styles/**/*.scss', ['styles']);
-  gulp.watch('./assets/icons/**/*.svg', ['iconfont']);
-  gulp.watch('./assets/scripts/**/*.js', ['jshint', 'scripts:main']);
-  gulp.watch('./assets/images/**/*.{gif,jpg,png,svg}', ['images']);
-  gulp.watch('./assets/sprites/**/*.png', ['sprites']);
-  gulp.watch('./assets/videos/**/*.{mp4,webm}', ['videos']);
+  gulp.watch('./assets/styles/**/*', ['styles']).on('change', browserSync.reload);
+  gulp.watch('./assets/icons/**/*', ['iconfont']);
+  gulp.watch('./assets/scripts/**/*', ['jshint', 'scripts:main']);
+  gulp.watch('./assets/images/**/*', ['images']);
+  gulp.watch('./assets/sprites/**/*', ['sprites']);
+  gulp.watch('./assets/videos/**/*', ['videos']);
 });
 
 // Build
