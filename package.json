@@ -38,8 +38,8 @@
     "imagemin-pngquant": "^4.1.0",
     "jshint-stylish": "^2.0.1",
     "run-sequence": "^1.2.1",
-    "webpack-stream": "^4.0.0",
-    "uglifyjs-webpack-plugin": "^1.1.8"
+    "uglifyjs-webpack-plugin": "^1.1.8",
+    "webpack-stream": "^4.0.0"
   },
   "dependencies": {
     "bootstrap-sass": "^3.3.7",

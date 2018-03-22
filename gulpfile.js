@@ -121,7 +121,8 @@ gulp.task('scripts:main', function() {
         new UglifyJsPlugin()
       ]
     }))
-    .pipe(gulp.dest('www/js'));
+    .pipe(gulp.dest('www/js'))
+    .pipe(browserSync.stream());
 });
 
 // Plugins Scripts
@@ -162,9 +163,13 @@ gulp.task('iconfont', function(){
     }))
     .pipe(iconfont({
       fontName: fontName,
-      formats: ['ttf', 'eot', 'woff', 'svg', 'woff2']
+      formats: ['woff', 'woff2'],
+      fontHeight: 1000,
+      normalize: true,
+      centerHorizontally: true
      }))
-    .pipe(gulp.dest('assets/fonts'));
+    .pipe(gulp.dest('assets/fonts'))
+    .pipe(browserSync.stream());
 });
 
 // Images
@@ -175,40 +180,36 @@ gulp.task('images', function() {
         svgoPlugins: [{removeViewBox: false}],
         use: [pngquant()]
     }))
-    .pipe(gulp.dest('www/img'));
+    .pipe(gulp.dest('www/img'))
+    .pipe(browserSync.stream());
 });
 
 // Videos
 gulp.task('videos', function() {
   gulp.src('./assets/videos/**/*.{mp4,webm}')
-    .pipe(gulp.dest('www/videos'));
+    .pipe(gulp.dest('www/videos'))
+    .pipe(browserSync.stream());
 });
 
 // Serve - Live reload server
 // @link http://www.browsersync.io/docs/gulp/
-gulp.task('serve', function() {
+gulp.task('serve', ['watch'], function() {
 
   browserSync.init({
     server: "./www"
   });
 
-  browserSync.watch([
-    './assets/styles/**.scss',
-    './assets/styles/**/*.scss'
-  ], function () {
-    gulp.run('styles');
-  });
   browserSync.watch('./www/**/*.{html,php}').on('change', browserSync.reload);
 });
 
 // Watch
 gulp.task('watch', function() {
-  gulp.watch('./assets/styles/**/*', ['styles']).on('change', browserSync.reload);
-  gulp.watch('./assets/icons/**/*', ['iconfont']);
-  gulp.watch('./assets/scripts/**/*', ['jshint', 'scripts:main']);
-  gulp.watch('./assets/images/**/*', ['images']);
-  gulp.watch('./assets/sprites/**/*', ['sprites']);
-  gulp.watch('./assets/videos/**/*', ['videos']);
+  gulp.watch('**/*', {cwd: './assets/styles/'}, ['styles']).on('change', browserSync.reload);
+  gulp.watch('**/*', {cwd: './assets/icons/'}, ['iconfont', 'styles']).on('change', browserSync.reload);
+  gulp.watch('**/*', {cwd: './assets/scripts/'}, ['scripts:main']).on('change', browserSync.reload);
+  gulp.watch('**/*', {cwd: './assets/images/'}, ['images']).on('change', browserSync.reload);
+  gulp.watch('**/*', {cwd: './assets/sprites/'}, ['sprites', 'styles']).on('change', browserSync.reload);
+  gulp.watch('**/*', {cwd: './assets/videos/'}, ['videos']).on('change', browserSync.reload);
 });
 
 // Build
