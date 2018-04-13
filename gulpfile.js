@@ -10,7 +10,8 @@ var gulp                    = require('gulp'),
     jshint                  = require('gulp-jshint'),
     clean                   = require('gulp-clean'),
     sourcemaps              = require('gulp-sourcemaps'),
-    webpack                 = require('webpack-stream'),
+    webpack                 = require('webpack'),
+    webpackStream           = require('webpack-stream'),
 
     // Sprites
     // @link https://www.npmjs.com/package/gulp.spritesmith
@@ -30,8 +31,9 @@ var gulp                    = require('gulp'),
     browserSync             = require('browser-sync').create(),
     reload                  = browserSync.reload;
 
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+    const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
+    const production = false;
 
 // Clean
 gulp.task('clean-all', function () {
@@ -106,7 +108,7 @@ gulp.task('styles', function() {
 // Scripts
 gulp.task('scripts:main', function() {
   return gulp.src('assets/scripts/main.js')
-    .pipe(webpack({
+    .pipe(webpackStream({
       output: {
         library: 'Library',
         filename: 'main.js',
@@ -118,8 +120,18 @@ gulp.task('scripts:main', function() {
         }]
       },
       plugins: [
-        new UglifyJsPlugin()
-      ]
+        // https://webpack.js.org/plugins/no-emit-on-errors-plugin/
+//         new webpack.NoEmitOnErrorsPlugin()
+
+        // https://webpack.js.org/loaders/eslint-loader/#noerrorsplugin
+//         new webpack.NoErrorsPlugin()
+      ].concat(
+        production ? [
+
+          // https://webpack.js.org/plugins/uglifyjs-webpack-plugin/
+          new UglifyJsPlugin()
+        ] : []
+      )
     }))
     .pipe(gulp.dest('www/js'))
     .pipe(browserSync.stream());
