@@ -33,8 +33,6 @@ var gulp                    = require('gulp'),
 
     const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-    const production = false;
-
 // Clean
 gulp.task('clean-all', function () {
   return gulp.src([
@@ -109,7 +107,7 @@ gulp.task('styles', function() {
 gulp.task('scripts:main', function() {
   return gulp.src('assets/scripts/main.js')
     .pipe(webpackStream({
-      watch: true,
+//       watch: true,
       cache: true,
       output: {
         library: 'Library',
@@ -131,11 +129,10 @@ gulp.task('scripts:main', function() {
         // https://webpack.js.org/loaders/eslint-loader/#noerrorsplugin
 //         new webpack.NoErrorsPlugin()
       ].concat(
-        production ? [
-
+        development ? [] : [
           // https://webpack.js.org/plugins/uglifyjs-webpack-plugin/
           new UglifyJsPlugin()
-        ] : []
+        ]
       )
     }))
     .on('error', function webpackError() {
