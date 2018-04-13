@@ -10,7 +10,7 @@ var gulp                    = require('gulp'),
     jshint                  = require('gulp-jshint'),
     clean                   = require('gulp-clean'),
     sourcemaps              = require('gulp-sourcemaps'),
-    webpack                 = require('webpack'),
+//     webpack                 = require('webpack'),
     webpackStream           = require('webpack-stream'),
 
     // Sprites
@@ -109,6 +109,8 @@ gulp.task('styles', function() {
 gulp.task('scripts:main', function() {
   return gulp.src('assets/scripts/main.js')
     .pipe(webpackStream({
+      watch: true,
+      cache: true,
       output: {
         library: 'Library',
         filename: 'main.js',
@@ -116,8 +118,11 @@ gulp.task('scripts:main', function() {
       },
       module: {
         loaders: [{
-          loader: 'babel-loader'
+          loader: ['babel-loader', 'jshint-loader']
         }]
+      },
+      resolve: {
+        modules: ["node_modules"],
       },
       plugins: [
         // https://webpack.js.org/plugins/no-emit-on-errors-plugin/
@@ -133,6 +138,9 @@ gulp.task('scripts:main', function() {
         ] : []
       )
     }))
+    .on('error', function webpackError() {
+      this.emit('end');
+    })
     .pipe(gulp.dest('www/js'))
     .pipe(browserSync.stream());
 });
