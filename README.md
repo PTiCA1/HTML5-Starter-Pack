@@ -9,14 +9,13 @@ Starter pack for front-end developers. SCSS, Bootstrap, JSHint, Gulp, NPM, Live 
 ```
 git clone git://github.com/PTiCA1/HTML5-Starter-Pack.git my-project
 npm install
-gulp --production
+gulp serve
 ```
 
 ## Development
 ```
-gulp — Compile and optimize the files in your assets directory
 gulp watch — Compile assets when file changes are made
-gulp watch — Compile assets when file changes are made + Live reload proxy on url (http://www.local.dev)
-gulp --production — Compile assets for production (no source maps).
+gulp serve — Compile assets when file changes are made + Live reload proxy on url (http://www.local.dev)
+gulp — Compile assets for production (no source maps).
 ```
 How to change local proxy url? In file "gulp.js" (proxy: "http://www.local.dev").
