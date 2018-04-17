@@ -1,10 +1,15 @@
 export default {
   init() {
+
     // JavaScript to be fired on all pages
-    console.log('pred init');
+    document.documentElement.classList.remove('no-js');
+    document.documentElement.classList.add('js');
+
+    console.log('common -- init');
+
   },
   finalize() {
     // JavaScript to be fired on all pages, after page specific JS is fired
-    console.log('ahoj test');
+    console.log('common -- finalize');
   },
 };

@@ -1,8 +1,12 @@
 // import external dependencies
-// import 'jquery';
+import 'jquery';
 
-// Import everything from autoload
-// import "./autoload/**/*"
+import Popper from 'popper.js';
+window.Popper = Popper;
+
+// Bootstap
+// @link https://github.com/twbs/bootstrap/tree/v4-dev/js/dist
+import 'bootstrap';
 
 // import local dependencies
 import Router from './util/Router';
@@ -15,9 +19,9 @@ const routes = new Router({
   // All pages
   common
   // Home page
-//   home,
+  // home,
   // About Us page, note the change from about-us to aboutUs.
-//   aboutUs,
+  // aboutUs,
 });
 
 // Load Events
