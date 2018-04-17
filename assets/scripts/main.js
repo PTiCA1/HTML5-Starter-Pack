@@ -1,11 +1,5 @@
-// import external dependencies
-import 'jquery';
-
-import Popper from 'popper.js';
-window.Popper = Popper;
-
 // Bootstap
-// @link https://github.com/twbs/bootstrap/tree/v4-dev/js/dist
+// @link https://github.com/twbs/bootstrap
 import 'bootstrap';
 
 // import local dependencies
