@@ -1,3 +1,6 @@
+// import 'jquery';
+import $ from 'jquery';
+
 // Bootstap
 // @link https://github.com/twbs/bootstrap
 import 'bootstrap';

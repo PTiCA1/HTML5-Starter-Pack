@@ -11,8 +11,7 @@ var   gulp                    = require('gulp'),
       clean                   = require('gulp-clean'),
       sourcemaps              = require('gulp-sourcemaps'),
       path                    = require('path'),
-      webpack                 = require('webpack'),
-      webpackStream           = require('webpack-stream'),
+      webpack                 = require('webpack-stream'),
 
       // Sprites
       // @link https://www.npmjs.com/package/gulp.spritesmith
@@ -43,8 +42,7 @@ gulp.task('clean-all', function () {
       'www/fonts/*',
       'www/js/**/*',
       'www/videos/**/*',
-      'www/maps',
-      '!www/js/vendor/'
+      'www/maps'
     ], {read: false})
     .pipe(clean());
 });
@@ -52,6 +50,7 @@ gulp.task('clean-all', function () {
 // Sprites
 gulp.task('sprites', function () {
   var spriteData = gulp.src('assets/sprites/*.png').pipe(spritesmith({
+    padding: 2,
     imgName: '../images/sprites.png',
     imgPath: '../img/sprites.png',
 
@@ -77,7 +76,7 @@ gulp.task('styles', function() {
     .pipe(sass().on('error', sass.logError))
 
     .pipe(autoprefixer({
-        browsers: ['last 2 versions', 'android 4', 'opera 12'],
+        browsers: ['> 1%', 'last 2 versions', 'Firefox ESR', 'Opera 12.1'],
         cascade: false
     }))
 
@@ -101,7 +100,7 @@ gulp.task('styles', function() {
 // Scripts
 gulp.task('scripts:main', function() {
   return gulp.src('assets/scripts/main.js')
-    .pipe(webpackStream({
+    .pipe(webpack({
       cache: true,
       output: {
         path: path.join(__dirname, 'www/js'),
@@ -111,13 +110,30 @@ gulp.task('scripts:main', function() {
       },
       devtool: development ? 'eval-source-map' : 'nosources-source-map',
 //       devtool: 'nosources-source-map',
+//       entry: ['babel-polyfill', 'assets/scripts/main.js'],
       module: {
         loaders: [{
           loader: ['babel-loader', 'jshint-loader'],
+          query: {
+            presets: ['es2015', 'stage-0']
+          },
           exclude: [
             path.resolve(__dirname, 'node_modules/')
           ],
-        }]
+        }],
+        rules: [
+          { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
+          {
+            test: require.resolve('jquery'),
+            use: [{
+              loader: 'expose-loader',
+              options: 'jQuery'
+            },{
+              loader: 'expose-loader',
+              options: '$'
+            }]
+          }
+        ]
       },
       resolve: {
         modules: ["node_modules"]
@@ -151,15 +167,6 @@ gulp.task('scripts:main', function() {
     })
     .pipe(gulp.dest('www/js'))
     .pipe(browserSync.stream());
-});
-
-// Vendor Scripts
-gulp.task('scripts:vendor', function () {
-  gulp.src([
-    'node_modules/jquery/dist/jquery.min.js'
-  ])
-    .pipe(uglify())
-    .pipe(gulp.dest('www/js/vendor'));
 });
 
 // Fonts
@@ -214,7 +221,8 @@ gulp.task('videos', function() {
 gulp.task('serve', ['watch'], function() {
 
   browserSync.init({
-    server: "./www"
+    server: "./www",
+//     proxy: "http://www.example.dev"
   });
 
   browserSync.watch('./www/**/*.{html,php}').on('change', browserSync.reload);
@@ -238,7 +246,7 @@ gulp.task('build', function(callback) {
   development = false;
 
   runSequence(
-    'scripts:main', 'scripts:vendor',
+    'scripts:main',
     ['iconfont', 'sprites', 'fonts', 'videos'],
     ['images', 'styles'],
     callback);
