@@ -114,9 +114,6 @@ gulp.task('scripts:main', function() {
       module: {
         loaders: [{
           loader: ['babel-loader', 'jshint-loader'],
-          query: {
-            presets: ['es2015', 'stage-0']
-          },
           exclude: [
             path.resolve(__dirname, 'node_modules/')
           ],

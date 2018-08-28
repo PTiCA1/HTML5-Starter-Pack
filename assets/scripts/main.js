@@ -1,9 +1,14 @@
-// import 'jquery';
-import $ from 'jquery';
+// jQuery
+import 'jquery';
 
 // Bootstap
 // @link https://github.com/twbs/bootstrap
-import 'bootstrap';
+// import 'bootstrap';
+
+// import 'popper.js';
+import 'bootstrap/js/dist/util';
+import 'bootstrap/js/dist/modal';
+import 'bootstrap/js/dist/collapse';
 
 // import local dependencies
 import Router from './util/Router';
