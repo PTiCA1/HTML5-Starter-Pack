@@ -6,5 +6,6 @@ module.exports = {
   'classPrefix': 'icon-',
   'baseSelector': '.icon',
   'types': ['woff', 'woff2'],
-  'fileName': 'app.[fontname].[hash].[ext]'
+  'fixedWidth': true,
+  'fileName': 'bundle.[fontname].[hash].[ext]'
 };
