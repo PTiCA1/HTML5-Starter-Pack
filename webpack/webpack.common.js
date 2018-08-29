@@ -4,6 +4,7 @@ const Path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 const dest = Path.join(__dirname, '../dist');
 
@@ -40,6 +41,13 @@ module.exports = {
             name: '[path][name].[ext]'
           }
         }
+      },{
+        test: /\.font\.js/,
+        use: [
+          'style-loader',
+          'css-loader',
+          require.resolve('webfonts-loader') // Replace this line with require('webfonts-loader')
+        ]
       }
     ]
   }
