@@ -1,17 +1,15 @@
-'use strict';
-
 const Path = require('path');
 const Webpack = require('webpack');
 const merge = require('webpack-merge');
 const common = require('./webpack.common.js');
 
-const dest = Path.join(__dirname, '../dist');
-
 module.exports = merge(common, {
   mode: 'development',
   devtool: 'cheap-eval-source-map',
+  output: {
+    chunkFilename: 'js/[name].chunk.js'
+  },
   devServer: {
-    contentBase: dest,
     inline: true
   },
   plugins: [

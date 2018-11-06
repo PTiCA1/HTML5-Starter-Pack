@@ -1,28 +1,30 @@
-'use strict';
-
 const Path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const dest = Path.join(__dirname, '../dist');
-
 module.exports = {
-  entry: [
-    Path.resolve(__dirname, './polyfills'),
-    Path.resolve(__dirname, '../src/scripts/index')
-  ],
+  entry: {
+    app: Path.resolve(__dirname, '../src/scripts/index.js')
+  },
   output: {
-    path: dest,
-    filename: 'bundle.[hash].js'
+    path: Path.join(__dirname, '../dist'),
+    filename: 'js/bundle.js'
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+      name: false
+    }
   },
   plugins: [
-    new CleanWebpackPlugin([dest], { root: Path.resolve(__dirname, '..') }),
+    new CleanWebpackPlugin(['dist'], { root: Path.resolve(__dirname, '..') }),
     new CopyWebpackPlugin([
       { from: Path.resolve(__dirname, '../public'), to: 'public' }
     ]),
     new HtmlWebpackPlugin({
-      template: Path.resolve(__dirname, '../src/index.html')
+      template: Path.resolve(__dirname, '../src/index.html'),
+      minify: false // https://www.npmjs.com/package/html-webpack-plugin#
     })
   ],
   resolve: {
@@ -33,6 +35,11 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.mjs$/,
+        include: /node_modules/,
+        type: 'javascript/auto'
+      },
+      {
         test: /\.(ico|jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)(\?.*)?$/,
         use: {
           loader: 'file-loader',
@@ -40,14 +47,7 @@ module.exports = {
             name: '[path][name].[ext]'
           }
         }
-      },{
-        test: /\.font\.js/,
-        use: [
-          'style-loader',
-          'css-loader',
-          require.resolve('webfonts-loader') // Replace this line with require('webfonts-loader')
-        ]
-      }
+      },
     ]
   }
 };

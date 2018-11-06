@@ -1,6 +1,14 @@
-.npm
-*.log
-npm-debug.log*
-dist
+# dependencies
 node_modules
+
+# production
+dist
+
+# misc
 .DS_Store
+
+npm-debug.log
+yarn-error.log
+yarn.lock
+.yarnclean
+.vscode
