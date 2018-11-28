@@ -1,3 +1,5 @@
+@import 'test';
+
 $body-color: blue;
 body {
   color: $body-color;
@@ -7,4 +9,5 @@ body {
 }
 .aho {
   display: inline-block;
+  display: flex;
 }
