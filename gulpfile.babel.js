@@ -20,7 +20,7 @@ import merge from 'merge-stream';
 import buffer from 'vinyl-buffer';
 
 // svgSprite
-import svgSprite from 'gulp-svg-sprite';
+import svgSymbols from 'gulp-svg-symbols';
 
 // Scripts
 import webpack from 'webpack-stream';
@@ -102,7 +102,17 @@ export const sprites = () => {
 // svgSprite
 export const svg = () => {
   return src(`${sources.svgIcons}`)
-    .pipe(svgSprite())
+    .pipe(svgSymbols({
+      svgAttrs: {
+        // class that will be added in default template root SVG (deprecated)
+        class: null,
+        xmlns: `http://www.w3.org/2000/svg`,
+      },
+      fontSize: 0,
+      id: `icon-%f`,
+      title: false,
+      templates: [`default-svg`]
+    }))
     .pipe(dest('./www/img'))
 }
 
@@ -149,7 +159,7 @@ export const watchForChanges = () => {
   watch(`${sources.styles}`, series(styles, reload));
   watch(`${sources.images}`, series(images, reload));
   watch(`${sources.sprites}`, series(sprites, images, reload));
-  watch(`${sources.svgIcons}`, series(svgSprite, images, reload));
+  watch(`${sources.svgIcons}`, series(svg, images, reload));
   watch(`${sources.scripts}`, series(scripts, reload));
   watch("./www/**/*.html", reload);
 }
