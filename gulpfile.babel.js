@@ -89,7 +89,10 @@ export const sprites = () => {
     retinaImgName: '../images/sprites@2x.png',
     retinaImgPath: '../img/sprites@2x.png',
 
-    cssName: '_sprites.scss'
+    cssName: '_sprites.scss',
+    cssVarMap: function (sprite) {
+      sprite.name = 'sprite-' + sprite.name;
+    }
   }));
 
   const imgStream = spriteData.img
@@ -108,7 +111,7 @@ export const icons = () => {
     .pipe(iconfontCss({
       fontName: fontName,
       targetPath: '../styles/components/_icons.scss',
-      fontPath: '../../assets/fonts/'
+      fontPath: '../fonts/'
     }))
     .pipe(iconfont({
       fontName: fontName,
@@ -174,12 +177,12 @@ export const clean = () => del([
 
 // Watch Task
 export const watchForChanges = () => {
-  watch(`${sources.styles}`, series(styles, reload));
+  watch(`${dirs.src}/styles/**/*.scss`, series(styles, reload));
   watch(`${sources.images}`, series(images, reload));
-  watch(`${sources.sprites}`, series(sprites, images, reload));
-  watch(`${sources.icons}`, series(icons, images, reload));
+  watch(`${sources.sprites}`, series(sprites));
+  watch(`${sources.icons}`, series(icons));
   watch(`${sources.fonts}`, series(fonts, reload));
-  watch(`${sources.scripts}`, series(scripts, reload));
+  watch(`${dirs.src}/scripts/**/*.js`, series(scripts, reload));
   watch("./www/**/*.html", reload);
 }
 

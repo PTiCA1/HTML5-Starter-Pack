@@ -1,11 +1,11 @@
 @font-face {
 	font-family: "HSPFont";
-	src: url('../../assets/fonts/HSPFont.eot');
-	src: url('../../assets/fonts/HSPFont.eot?#iefix') format('eot'),
-		url('../../assets/fonts/HSPFont.woff2') format('woff2'),
-		url('../../assets/fonts/HSPFont.woff') format('woff'),
-		url('../../assets/fonts/HSPFont.ttf') format('truetype'),
-		url('../../assets/fonts/HSPFont.svg#HSPFont') format('svg');
+	src: url('../fonts/HSPFont.eot');
+	src: url('../fonts/HSPFont.eot?#iefix') format('eot'),
+		url('../fonts/HSPFont.woff2') format('woff2'),
+		url('../fonts/HSPFont.woff') format('woff'),
+		url('../fonts/HSPFont.ttf') format('truetype'),
+		url('../fonts/HSPFont.svg#HSPFont') format('svg');
 }
 
 .icon:before {
@@ -21,10 +21,6 @@
 }
 
 
-.icon-cz-flag:before {
-	content: "\E001";
-}
-
 .icon-world:before {
-	content: "\E002";
+	content: "\E001";
 }
