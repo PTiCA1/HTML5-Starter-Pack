@@ -28,6 +28,7 @@ const fontName = 'HSPFont';
 // Scripts
 import webpack from 'webpack';
 import webpackStream from 'webpack-stream';
+const UglifyjsWebpackPlugin = require('uglifyjs-webpack-plugin');
 
 // Dev
 import browserSync from "browser-sync";
@@ -159,6 +160,22 @@ export const scripts = () => {
       output: {
         filename: 'bundle.js'
       },
+      optimization: {
+        minimizer: PRODUCTION ? [
+          new UglifyjsWebpackPlugin({
+            uglifyOptions: {
+              output: {
+                comments: false, // remove comments
+              },
+              compress: {
+                drop_console: true // remove console.log()
+              }
+            }
+          })
+        ] : [
+          // Dev mode
+        ]
+      },
       externals: {
         // jquery: 'jQuery'
       },
@@ -203,7 +220,7 @@ export const reload = done => {
 // Development Task
 export const dev = series(clean, sprites, icons, parallel(styles, images, scripts, fonts), serve, watchForChanges);
 
-// Serve Task
+// Production Task
 export const build = series(clean, sprites, icons, parallel(styles, images, scripts, fonts));
 
 // Default task
