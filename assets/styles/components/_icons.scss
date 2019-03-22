@@ -1,0 +1,30 @@
+@font-face {
+	font-family: "HSPFont";
+	src: url('../../assets/fonts/HSPFont.eot');
+	src: url('../../assets/fonts/HSPFont.eot?#iefix') format('eot'),
+		url('../../assets/fonts/HSPFont.woff2') format('woff2'),
+		url('../../assets/fonts/HSPFont.woff') format('woff'),
+		url('../../assets/fonts/HSPFont.ttf') format('truetype'),
+		url('../../assets/fonts/HSPFont.svg#HSPFont') format('svg');
+}
+
+.icon:before {
+	font-family: "HSPFont";
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: normal;
+	/* speak: none; only necessary if not using the private unicode range (firstGlyph option) */
+	text-decoration: none;
+	text-transform: none;
+}
+
+
+.icon-cz-flag:before {
+	content: "\E001";
+}
+
+.icon-world:before {
+	content: "\E002";
+}

@@ -19,8 +19,10 @@ import spritesmith from 'gulp.spritesmith';
 import merge from 'merge-stream';
 import buffer from 'vinyl-buffer';
 
-// svgSprite
-import svgSymbols from 'gulp-svg-symbols';
+// iconFont
+import iconfont from 'gulp-iconfont';
+import iconfontCss from 'gulp-iconfont-css';
+const fontName = 'HSPFont';
 
 // Scripts
 import webpack from 'webpack-stream';
@@ -45,7 +47,8 @@ const sources = {
   styles: `${dirs.src}/styles/main.scss`,
   images: `${dirs.src}/images/**/*.{jpg,jpeg,png,svg,gif}`,
   sprites: `${dirs.src}/sprites/*.png`,
-  svgIcons: `${dirs.src}/icons/*.svg`,
+  icons: `${dirs.src}/icons/*.svg`,
+  fonts: `${dirs.src}/fonts/*.{eot,svg,ttf,woff,woff2}`,
   scripts: `${dirs.src}/scripts/main.js`
 };
 
@@ -72,7 +75,8 @@ export const styles = () => {
 export const images = () => {
   return src(`${sources.images}`)
     .pipe(gulpif(PRODUCTION, imagemin()))
-    .pipe(dest('www/img'));
+    .pipe(dest('www/img'))
+    .pipe(server.stream());
 }
 
 // Sprites
@@ -99,23 +103,30 @@ export const sprites = () => {
   return merge(imgStream, cssStream)
 }
 
-// svgSprite
-export const svg = () => {
-  return src(`${sources.svgIcons}`)
-    .pipe(svgSymbols({
-      svgAttrs: {
-        // class that will be added in default template root SVG (deprecated)
-        class: null,
-        xmlns: `http://www.w3.org/2000/svg`,
-      },
-      fontSize: 0,
-      id: `icon-%f`,
-      title: false,
-      templates: [`default-svg`]
+// iconFonts
+export const icons = () => {
+  return src(`${sources.icons}`)
+    .pipe(iconfontCss({
+      fontName: fontName,
+      targetPath: '../styles/components/_icons.scss',
+      fontPath: '../../assets/fonts/'
     }))
-    .pipe(dest('./www/img'))
+    .pipe(iconfont({
+      fontName: fontName,
+      formats: ['woff', 'woff2'],
+      fontHeight: 1000,
+      normalize: true,
+      centerHorizontally: true
+    }))
+    .pipe(dest('./assets/fonts'));
 }
 
+// Images
+export const fonts = () => {
+  return src(`${sources.fonts}`)
+    .pipe(dest('www/fonts'))
+    .pipe(server.stream());
+}
 
 
 // Scripts
@@ -149,6 +160,8 @@ export const scripts = () => {
 
 // Clean
 export const clean = () => del([
+  './www/fonts',
+  './www/icons',
   './www/css',
   './www/img',
   './www/js',
@@ -159,7 +172,8 @@ export const watchForChanges = () => {
   watch(`${sources.styles}`, series(styles, reload));
   watch(`${sources.images}`, series(images, reload));
   watch(`${sources.sprites}`, series(sprites, images, reload));
-  watch(`${sources.svgIcons}`, series(svg, images, reload));
+  watch(`${sources.icons}`, series(icons, images, reload));
+  watch(`${sources.fonts}`, series(fonts, reload));
   watch(`${sources.scripts}`, series(scripts, reload));
   watch("./www/**/*.html", reload);
 }
@@ -179,11 +193,8 @@ export const reload = done => {
 };
 
 
-
-
-
 // Development Task
-export const dev = series(clean, sprites, parallel(styles, images, scripts), serve, watchForChanges);
+export const dev = series(clean, sprites, icons, parallel(styles, images, scripts, fonts), serve, watchForChanges);
 
 // Serve Task
 // export const build = series(clean, parallel(buildStyles, buildViews, buildScripts));
