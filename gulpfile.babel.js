@@ -10,6 +10,7 @@ import gulpif from 'gulp-if';
 import postcss from 'gulp-postcss';
 import sourcemaps from 'gulp-sourcemaps';
 import autoprefixer from 'autoprefixer';
+import cssnano from 'cssnano';
 
 // Images
 import imagemin from 'gulp-imagemin';
@@ -25,7 +26,8 @@ import iconfontCss from 'gulp-iconfont-css';
 const fontName = 'HSPFont';
 
 // Scripts
-import webpack from 'webpack-stream';
+import webpack from 'webpack';
+import webpackStream from 'webpack-stream';
 
 // Dev
 import browserSync from "browser-sync";
@@ -38,8 +40,6 @@ const dirs = {
   src: 'assets',
   dest: 'build'
 };
-
-
 
 // File Sources
 // ----
@@ -56,7 +56,6 @@ const sources = {
 const argv = yargs.argv;
 const PRODUCTION = !!argv.production;
 
-
 // Main Tasks
 // ----
 
@@ -65,7 +64,7 @@ export const styles = () => {
   return src(`${sources.styles}`)
     .pipe(gulpif(!PRODUCTION, sourcemaps.init()))
     .pipe(sass().on('error', sass.logError))
-    .pipe(gulpif(PRODUCTION, postcss([ autoprefixer ])))
+    .pipe(gulpif(PRODUCTION, postcss([ autoprefixer, cssnano ])))
     .pipe(gulpif(!PRODUCTION, sourcemaps.write()))
     .pipe(dest('www/css'))
     .pipe(server.stream());
@@ -128,24 +127,30 @@ export const fonts = () => {
     .pipe(server.stream());
 }
 
-
 // Scripts
 export const scripts = () => {
   return src(`${sources.scripts}`)
-    .pipe(webpack({
+    .pipe(webpackStream({
       module: {
         rules: [
           {
-            test: /\.js$/,
+            test: /\.m?js$/,
+            exclude: /(node_modules)/,
             use: {
               loader: 'babel-loader',
               options: {
-                presets: []
+                presets: ['@babel/preset-env']
               }
             }
           }
-        ]
+        ],
       },
+      plugins: [
+        new webpack.ProvidePlugin({
+          $: 'jquery',
+          jQuery: 'jquery'
+        })
+      ],
       mode: PRODUCTION ? 'production' : 'development',
       devtool: !PRODUCTION ? 'inline-source-map' : false,
       output: {
@@ -192,13 +197,11 @@ export const reload = done => {
   done();
 };
 
-
 // Development Task
 export const dev = series(clean, sprites, icons, parallel(styles, images, scripts, fonts), serve, watchForChanges);
 
 // Serve Task
-// export const build = series(clean, parallel(buildStyles, buildViews, buildScripts));
-// export const build = series(clean, parallel(buildStyles, buildScripts));
+export const build = series(clean, sprites, icons, parallel(styles, images, scripts, fonts));
 
 // Default task
 export default dev;

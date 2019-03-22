@@ -1,3 +1,21 @@
-.ahoj {
-  display: block;
-}
+/* =============================================================================
+  Main
+============================================================================= */
+
+// Sprites
+// @link https://www.npmjs.com/package/gulp.spritesmith
+@import "mixins/sprites";
+
+// Bootstrap
+@import "../../node_modules/bootstrap/scss/functions";
+@import "common/variables";
+@import "../../node_modules/bootstrap/scss/mixins";
+@import "../../node_modules/bootstrap/scss/reboot";
+@import "../../node_modules/bootstrap/scss/type";
+
+// Components
+@import "components/icons";
+@import "components/sprites";
+
+// Common
+@import "common/global";
