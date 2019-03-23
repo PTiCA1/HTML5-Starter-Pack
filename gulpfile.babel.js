@@ -213,7 +213,8 @@ export const serve = done => {
   done();
 };
 export const reload = done => {
-  server.reload();
+  // server.reload({ stream: true }); // for reaload page
+  server.stream(); // for inject changes
   done();
 };
 
