@@ -10,9 +10,13 @@ git clone git://github.com/PTiCA1/HTML5-Starter-Pack.git my-project
 yarn install or npm install
 yarn dev or npm run dev
 ```
-
-## Development
+### Running development server
 ```
-`yarn dev` — Compile assets when file changes are made + Live reload proxy on url (http://localhost:3000)
-`yarn production` — Compile assets for production (no source maps, minify css/js etc).
+yarn dev
+```
+Your browser will automatically open to `http://localhost:3000`
+
+### Building for production
+```
+yarn production
 ```
