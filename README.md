@@ -13,6 +13,6 @@ yarn dev or npm run dev
 
 ## Development
 ```
-yarn dev — Compile assets when file changes are made + Live reload proxy on url (http://localhost:3000)
-yarn production — Compile assets for production (no source maps, minify css/js etc).
+`yarn dev` — Compile assets when file changes are made + Live reload proxy on url (http://localhost:3000)
+`yarn production` — Compile assets for production (no source maps, minify css/js etc).
 ```
