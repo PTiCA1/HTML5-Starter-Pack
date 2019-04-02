@@ -11,6 +11,7 @@ import postcss from 'gulp-postcss';
 import sourcemaps from 'gulp-sourcemaps';
 import autoprefixer from 'autoprefixer';
 import cssnano from 'cssnano';
+import sassGlob from "gulp-sass-glob";
 
 // Images
 import imagemin from 'gulp-imagemin';
@@ -64,10 +65,12 @@ const PRODUCTION = !!argv.production;
 export const styles = () => {
   return src(`${sources.styles}`)
     .pipe(gulpif(!PRODUCTION, sourcemaps.init()))
-    .pipe(sass().on('error', sass.logError))
-    .pipe(gulpif(PRODUCTION, postcss([ autoprefixer, cssnano ])))
+    .pipe(sassGlob())
+    .pipe(sass({ noCache: true }).on("error", sass.logError))
+    .pipe(gulpif(PRODUCTION, postcss([autoprefixer, cssnano])))
+    .pipe(gulpif(!PRODUCTION, postcss([autoprefixer])))
     .pipe(gulpif(!PRODUCTION, sourcemaps.write()))
-    .pipe(dest('www/css'))
+    .pipe(dest("www/css"))
     .pipe(server.stream());
 }
 
@@ -194,7 +197,7 @@ export const clean = () => del([
 
 // Watch Task
 export const watchForChanges = () => {
-  watch(`${dirs.src}/styles/**/*.scss`, series(styles, reload));
+  watch(`${dirs.src}/styles/**/*.scss`, series(styles, stream));
   watch(`${sources.images}`, series(images, reload));
   watch(`${sources.sprites}`, series(sprites));
   watch(`${sources.icons}`, series(icons));
@@ -213,7 +216,10 @@ export const serve = done => {
   done();
 };
 export const reload = done => {
-  // server.reload({ stream: true }); // for reaload page
+  server.reload(); // for reaload page
+  done();
+};
+export const stream = done => {
   server.stream(); // for inject changes
   done();
 };
