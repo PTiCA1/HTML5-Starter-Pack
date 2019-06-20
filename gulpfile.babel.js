@@ -62,7 +62,7 @@ const PRODUCTION = !!argv.production;
 // ----
 
 // Styles
-export const styles = () => {
+export const styles = async () => {
   return src(`${sources.styles}`)
     .pipe(gulpif(!PRODUCTION, sourcemaps.init()))
     .pipe(sassGlob())
@@ -75,7 +75,7 @@ export const styles = () => {
 }
 
 // Images
-export const images = () => {
+export const images = async () => {
   return src(`${sources.images}`)
     .pipe(gulpif(PRODUCTION, imagemin()))
     .pipe(dest('www/img'))
@@ -83,7 +83,7 @@ export const images = () => {
 }
 
 // Sprites
-export const sprites = () => {
+export const sprites = async () => {
   const spriteData = src(`${sources.sprites}`).pipe(spritesmith({
     padding: 10,
     imgName: '../images/sprites.png',
@@ -110,7 +110,7 @@ export const sprites = () => {
 }
 
 // iconFonts
-export const icons = () => {
+export const icons = async () => {
   return src(`${sources.icons}`)
     .pipe(iconfontCss({
       fontName: fontName,
@@ -128,14 +128,22 @@ export const icons = () => {
 }
 
 // Images
-export const fonts = () => {
+export const fonts = async () => {
   return src(`${sources.fonts}`)
     .pipe(dest('www/fonts'))
     .pipe(server.stream());
 }
 
+// Vendor scripts
+export const vendorScripts = async () => {
+  return src([
+    './node_modules/jquery/dist/jquery.min.js'
+  ])
+    .pipe(dest('www/js/vendor'))
+}
+
 // Scripts
-export const scripts = () => {
+export const scripts = async () => {
   return src(`${sources.scripts}`)
     .pipe(webpackStream({
       module: {
@@ -155,7 +163,8 @@ export const scripts = () => {
       plugins: [
         new webpack.ProvidePlugin({
           $: 'jquery',
-          jQuery: 'jquery'
+          jQuery: 'jquery',
+          'window.jQuery': 'jquery'
         })
       ],
       mode: PRODUCTION ? 'production' : 'development',
@@ -180,14 +189,14 @@ export const scripts = () => {
         ]
       },
       externals: {
-        // jquery: 'jQuery'
+        jquery: 'jQuery'
       },
     }))
     .pipe(dest('./www/js'));
 }
 
 // Clean
-export const clean = () => del([
+export const clean = async () => del([
   './www/fonts',
   './www/icons',
   './www/css',
@@ -196,7 +205,7 @@ export const clean = () => del([
 ]);
 
 // Watch Task
-export const watchForChanges = () => {
+export const watchForChanges = async () => {
   watch(`${dirs.src}/styles/**/*.scss`, series(styles, stream));
   watch(`${sources.images}`, series(images, reload));
   watch(`${sources.sprites}`, series(sprites));
@@ -225,10 +234,10 @@ export const stream = done => {
 };
 
 // Development Task
-export const dev = series(clean, sprites, icons, parallel(styles, images, scripts, fonts), serve, watchForChanges);
+export const dev = series(clean, sprites, icons, vendorScripts, parallel(styles, images, scripts, fonts), serve, watchForChanges);
 
 // Production Task
-export const build = series(clean, sprites, icons, parallel(styles, images, scripts, fonts));
+export const build = series(clean, sprites, icons, vendorScripts, parallel(styles, images, scripts, fonts));
 
 // Default task
 export default dev;

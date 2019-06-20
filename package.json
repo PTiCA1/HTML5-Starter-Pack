@@ -12,8 +12,10 @@
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",
+    "@babel/plugin-transform-runtime": "^7.4.4",
     "@babel/preset-env": "^7.3.4",
     "@babel/register": "^7.0.0",
+    "@babel/runtime": "^7.4.5",
     "autoprefixer": "^9.5.0",
     "babel-loader": "^8.0.5",
     "browser-sync": "^2.26.3",
@@ -31,15 +33,15 @@
     "gulp-svg-symbols": "^3.2.3",
     "gulp.spritesmith": "^6.9.0",
     "merge-stream": "^1.0.1",
-    "vinyl-buffer": "^1.0.1",
     "uglifyjs-webpack-plugin": "^2.1.2",
+    "vinyl-buffer": "^1.0.1",
     "webpack": "^4.29.6",
     "webpack-stream": "^5.2.1",
     "yargs": "^13.2.2"
   },
   "dependencies": {
     "bootstrap": "^4.3.1",
-    "jquery": "^3.3.1",
+    "jquery": "^3.4.1",
     "popper.js": "^1.14.7"
   }
 }
